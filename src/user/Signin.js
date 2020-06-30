@@ -1,7 +1,7 @@
 import React, { useState } from "react"
-import { Link, Redirect } from "react-router-dom"
+import { Redirect } from "react-router-dom"
 import Layout from "../core/Layout"
-import { signin } from "../auth/index"
+import { signin, authenticate, isAuthenticated } from "../auth/index"
 
 const Signin = () => {
     const [userValues, setUserValues] = useState({
@@ -13,6 +13,8 @@ const Signin = () => {
     })
 
     const { email, password, error, loading, redirectToReferrer } = userValues
+
+    const { user } = isAuthenticated()
 
     const handleChange = name => event => {
         setUserValues({ ...userValues, error: false, [name]: event.target.value })
@@ -28,9 +30,11 @@ const Signin = () => {
                 if (data.err) {
                     setUserValues({ ...userValues, error: data.err, loading: false })
                 } else {
-                    setUserValues({
-                        ...userValues,
-                        redirectToReferrer: true
+                    authenticate(data, () => {
+                        setUserValues({
+                            ...userValues,
+                            redirectToReferrer: true
+                        })
                     })
                 }
             })
@@ -63,6 +67,14 @@ const Signin = () => {
 
     const redirectUser = () => {
         if (redirectToReferrer) {
+            if (user && user.role === 1) {
+                return <Redirect to="/admin/dashboard" />
+            } else {
+                return <Redirect to="/user/dashboard" />
+            }
+        }
+
+        if (isAuthenticated()) {
             return <Redirect to="/" />
         }
     }
@@ -70,7 +82,7 @@ const Signin = () => {
 
 
     return (
-        <Layout title="Sign-In" description="Create a Account to shop with us !" className="container col-md-8 offset-md-2">
+        <Layout title="Sign-In" description="Login Account to shop with us !" className="container col-md-8 offset-md-2">
             {showLoading()}
             {showError()}
             {signUpForm()}
