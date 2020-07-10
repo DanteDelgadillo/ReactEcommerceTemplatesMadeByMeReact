@@ -33,7 +33,6 @@ const Search = () => {
     }, [])
 
     const searchData = () => {
-        console.log(search, category)
         if (search) {
             list({ search: search || undefined, category: category })
                 .then(response => {
@@ -53,6 +52,16 @@ const Search = () => {
 
     const handleChange = (name) => event => {
         setData({ ...data, [name]: event.target.value, searched: false });
+    }
+
+    const searchMessage = (searched, results) => {
+        // console.log(searched, results)
+        // if (searched && results.length > 0) {
+        //     return `Found ${results.length} products`
+        // }
+        // if (searched && results.length < 1) {
+        //     return `No Products Found`
+        // }
     }
 
     const searchedProducts = (results = []) => {
@@ -93,15 +102,22 @@ const Search = () => {
         </form>
     )
 
+
+
     return (
-        <div className="row">
-            <div className="container mb-3">
-                {searchForm()}
+        <div>
+            <h2 className="mt4 mb-4">
+                {searchMessage(search, results)}
+            </h2>
+            <div className="row">
+                <div className="container mb-3">
+                    {searchForm()}
 
-            </div>
-            <div className="container-fluid mb-3">
-                {searchedProducts(results)}
+                </div>
+                <div className="container-fluid mb-3">
+                    {searchedProducts(results)}
 
+                </div>
             </div>
         </div>
     )

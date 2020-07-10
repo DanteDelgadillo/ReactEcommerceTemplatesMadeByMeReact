@@ -1,5 +1,6 @@
 import { API } from "../config"
 import queryString from "query-string";
+import Product from "./Product";
 
 export const getProduct = (sortBy) => {
 
@@ -65,4 +66,13 @@ export const list = params => {
 };
 
 
+export const read = productId => {
 
+    return fetch(`${API}/product/${productId}`, {
+        method: "GET",
+    })
+        .then(response => {
+            return response.json()
+        })
+        .catch(err => console.log(err))
+};
