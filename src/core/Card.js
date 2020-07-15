@@ -1,12 +1,13 @@
 import React, { useState } from "react"
 import { Link, Redirect } from "react-router-dom"
 import ShowImage from "./ShowImage"
-import moment from 'moment'
-import { addItem } from "./CartHelper"
+import moment, { updateLocale } from 'moment'
+import { addItem, updateItems } from "./CartHelper"
 
-const Card = ({ product, showViewProductButton = true }) => {
+const Card = ({ product, showViewProductButton = true, showAddToCartButton = true, cartUpdate = false }) => {
 
     const [redirct, setRedirct] = useState(false)
+    const [count, setCount] = useState(product.count)
 
     const showButton = (showViewProductButton) => {
         return (
@@ -35,18 +36,37 @@ const Card = ({ product, showViewProductButton = true }) => {
         }
     }
 
-    const showAddToCartButton = () => {
+    const showAddToCart = (showAddToCartButton) => {
         return (
-            <button onClick={addToCart} className="btn btn-outline-warning mt-2 mb-2">
-                Add to Cart
+            showAddToCartButton && (
+                <button onClick={addToCart} className="btn btn-outline-warning mt-2 mb-2">
+                    Add to Cart
         </button>
-        )
+            ))
     }
 
     const showStock = (quantity) => {
         return (quantity > 0 ? <span className="badge badge-primary badge-pill">In Stock</span> : <span badge badge-primary badge-pill>Out of Stock</span>
 
         )
+    }
+
+    const showCartUpdate = cartUpdate => {
+        return cartUpdate && <div>
+            <div className="input-group mb3">
+                <div className="input-group-prepend">
+                    <span className="input-group-text">Adjust Qanity</span>
+                </div>
+                <input type="number" className="form-control" value={count} onChange={handleChange(product._id)} />
+            </div>
+        </div>
+    }
+
+    const handleChange = productId => event => {
+        setCount(event.target.value < 1 ? 1 : event.target.value)
+        if (event.target.value >= 1) {
+            updateItems(productId, event.target.value)
+        }
     }
 
     return (
@@ -64,7 +84,8 @@ const Card = ({ product, showViewProductButton = true }) => {
                 {showStock(product.quantity)}
                 <br />
                 {showButton(showViewProductButton)}
-                {showAddToCartButton()}
+                {showAddToCart(showAddToCartButton)}
+                {showCartUpdate(cartUpdate)}
             </div>
         </div>
 
