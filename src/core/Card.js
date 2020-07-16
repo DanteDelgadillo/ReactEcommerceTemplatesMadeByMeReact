@@ -2,9 +2,15 @@ import React, { useState } from "react"
 import { Link, Redirect } from "react-router-dom"
 import ShowImage from "./ShowImage"
 import moment, { updateLocale } from 'moment'
-import { addItem, updateItems } from "./CartHelper"
+import { addItem, updateItems, removeItem } from "./CartHelper"
 
-const Card = ({ product, showViewProductButton = true, showAddToCartButton = true, cartUpdate = false }) => {
+const Card = ({ product,
+    showViewProductButton = true,
+    showAddToCartButton = true,
+    cartUpdate = false,
+    showRemoveProductButton = false,
+    setRun = f => f,
+    run = undefined }) => {
 
     const [redirct, setRedirct] = useState(false)
     const [count, setCount] = useState(product.count)
@@ -21,6 +27,9 @@ const Card = ({ product, showViewProductButton = true, showAddToCartButton = tru
             )
         )
     }
+
+
+
 
     const addToCart = () => {
         addItem(product, () => {
@@ -62,7 +71,18 @@ const Card = ({ product, showViewProductButton = true, showAddToCartButton = tru
         </div>
     }
 
+    const showRemoveButton = (showRemoveProductButton) => {
+        return (
+            showRemoveProductButton && (
+                <button onClick={() => { removeItem(product._id); setRun(!run); }} className="btn btn-outline-danger mt-2 mb-2">
+                    Delete
+        </button>
+            ))
+    }
+
+
     const handleChange = productId => event => {
+        setRun(!run); // run useEffect in parent Cart
         setCount(event.target.value < 1 ? 1 : event.target.value)
         if (event.target.value >= 1) {
             updateItems(productId, event.target.value)
@@ -72,7 +92,6 @@ const Card = ({ product, showViewProductButton = true, showAddToCartButton = tru
     return (
 
         <div className="card">
-            {console.log(product)}
             <div className="card-header name">{product.name}</div>
             <div className="card-body">
                 {shouldRedirct(redirct)}
@@ -85,6 +104,7 @@ const Card = ({ product, showViewProductButton = true, showAddToCartButton = tru
                 <br />
                 {showButton(showViewProductButton)}
                 {showAddToCart(showAddToCartButton)}
+                {showRemoveButton(showRemoveProductButton)}
                 {showCartUpdate(cartUpdate)}
             </div>
         </div>

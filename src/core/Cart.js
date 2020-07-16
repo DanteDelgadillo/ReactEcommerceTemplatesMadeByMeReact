@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import Layout from "./Layout"
-import { getProduct } from "./apiCore"
+import { getProduct, removeItem } from "./apiCore"
 import Card from "./Card"
 import { getCart } from './CartHelper'
+import CheckOut from "./CheckOut"
 
 const Cart = () => {
 
     const [items, setItems] = useState([])
+    const [run, setRun] = useState(false);
+
 
 
     useEffect(() => {
         setItems(getCart())
-    }, [])
+    }, [run])
 
     const showItems = items => {
         return (
@@ -20,7 +23,8 @@ const Cart = () => {
                 <h2>Your Cart has {`${items.length}`}</h2>
                 <hr />
                 {items.map((p, i) => (
-                    <Card key={i} product={p}></Card>
+                    <Card key={i} product={p} showAddToCartButton={false} cartUpdate={true} showRemoveProductButton={true} setRun={setRun}
+                        run={run}></Card>
                 ))}
             </div>
         )
@@ -40,7 +44,11 @@ const Cart = () => {
                     {items.length > 0 ? showItems(items) : noItemsMessage()}
                 </div>
                 <div className="col-6">
-                    <p>Show check out opptions addresss /total/update</p>
+                    <h2 className="mb-4">
+                        Your cart Summary
+                  </h2>
+                    <hr />
+                    <CheckOut products={items} />
                 </div>
 
             </div>
