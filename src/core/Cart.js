@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import Layout from "./Layout"
-import { getProduct, removeItem } from "./apiCore"
 import Card from "./Card"
 import { getCart } from './CartHelper'
 import CheckOut from "./CheckOut"
@@ -32,7 +31,7 @@ const Cart = () => {
 
     const noItemsMessage = () => (
         <h2>
-            Your Cart is emty.<Link to="/shop">Continue Shopping</Link>
+            Your Cart is empty.<Link to="/shop">Continue Shopping</Link>
         </h2>
     )
 
@@ -48,7 +47,7 @@ const Cart = () => {
                         Your cart Summary
                   </h2>
                     <hr />
-                    <CheckOut products={items} />
+                    <CheckOut setRun={setRun} products={items} />
                 </div>
 
             </div>

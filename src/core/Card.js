@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Link, Redirect } from "react-router-dom"
 import ShowImage from "./ShowImage"
-import moment, { updateLocale } from 'moment'
+import moment from 'moment'
 import { addItem, updateItems, removeItem } from "./CartHelper"
 
 const Card = ({ product,
@@ -40,8 +40,6 @@ const Card = ({ product,
     const shouldRedirct = redirct => {
         if (redirct) {
             return <Redirect to="cart" />
-        } else {
-
         }
     }
 
@@ -59,6 +57,15 @@ const Card = ({ product,
 
         )
     }
+
+    const handleChange = productId => event => {
+        setRun(!run); // run useEffect in parent Cart
+        setCount(event.target.value < 1 ? 1 : event.target.value)
+        if (event.target.value >= 1) {
+            updateItems(productId, event.target.value)
+        }
+    }
+
 
     const showCartUpdate = cartUpdate => {
         return cartUpdate && <div>
@@ -81,13 +88,6 @@ const Card = ({ product,
     }
 
 
-    const handleChange = productId => event => {
-        setRun(!run); // run useEffect in parent Cart
-        setCount(event.target.value < 1 ? 1 : event.target.value)
-        if (event.target.value >= 1) {
-            updateItems(productId, event.target.value)
-        }
-    }
 
     return (
 
